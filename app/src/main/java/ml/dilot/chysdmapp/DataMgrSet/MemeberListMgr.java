@@ -109,7 +109,7 @@ public class MemeberListMgr {
                     param.put("result", false);
                     param.put("message","존재하지 않는 대분류");
                 } else {
-                    List<String> subCate = (List<String>)dataSnapshot.child("소분류").child(at).getValue(List.class);
+                    List<String> subCate = (List<String>)dataSnapshot.child("소분류").child(at).getValue();
                     if(subCate == null) subCate = new ArrayList<>();
                     if (subCate.contains(title)) {
                         param.put("result", false);
