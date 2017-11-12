@@ -431,6 +431,7 @@ public class MemeberListMgr {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> lstCate = (List<String>) dataSnapshot.child("분류").child("대분류").getValue();
+                if(lstCate == null) lstCate = new ArrayList<>();
                 Map<String,UserInfo> backupUserInfoes = (Map<String, UserInfo>) dataSnapshot.child("명단").getValue();
                 if(backupUserInfoes == null) backupUserInfoes = new HashMap<>();
                 List<String> successList = new ArrayList<>();
@@ -469,7 +470,7 @@ public class MemeberListMgr {
             }
         });
     }
-    public static void DeleteSubCategory(final String cate, final String subCate, final vvoidEvent andthen){
+    public static void DeleteSubCategory(final String cate, final String subCates[], final vvoidEvent andthen){
         FirebaseDatabase.getInstance().getReference().child("회원명단").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -482,33 +483,40 @@ public class MemeberListMgr {
                     andthen.vvoidEvent(param);
                     return;
                 }
+
                 List<String> lstSubCate = (List<String>) dataSnapshot.child("분류").child("소분류").child(cate).getValue();
                 if(lstSubCate == null) lstSubCate = new ArrayList<>();
-                if(!lstSubCate.contains(subCate)){
-                    param.put("result", false);
-                    param.put("message","존재하지 않는 소분류입니다.");
-                    andthen.vvoidEvent(param);
-                    return;
-                }
                 Map<String,UserInfo> backupUserInfoes = (Map<String, UserInfo>) dataSnapshot.child("명단").getValue();
                 if(backupUserInfoes == null) backupUserInfoes = new HashMap<>();
-                boolean serach = false;
-                for(String uid : backupUserInfoes.keySet()) {
-                    UserInfo user = backupUserInfoes.get(uid);
-                    if (user.category.equals(cate) && user.subCategory.equals(subCate)) {
-                        serach = true;
-                        break;
+                List<String> successList = new ArrayList<>();
+                Map<String,String> failList = new HashMap<>();
+                for(String subCate : subCates){
+                    if(!lstSubCate.contains(subCate)){
+                        failList.put(subCate,"존재하지 않는 소분류입니다.");
+                        continue;
                     }
+                    boolean serach = false;
+                    for(String uid : backupUserInfoes.keySet()) {
+                        UserInfo user = backupUserInfoes.get(uid);
+                        if (user.category.equals(cate) && user.subCategory.equals(subCate)) {
+                            serach = true;
+                            break;
+                        }
+                    }
+                    if(serach){
+                        failList.put(subCate,"해당 분류에 남은 인원이 있습니다.");
+                        continue;
+                    }
+
+                    lstSubCate.remove(subCate);
+                    successList.add(subCate);
                 }
-                if(serach){
-                    param.put("result", false);
-                    param.put("message","해당 분류에 남은 인원이 있습니다.");
-                    andthen.vvoidEvent(param);
-                    return;
-                }
-                lstSubCate.remove(subCate);
                 FirebaseDatabase.getInstance().getReference().child("회원명단").child("분류").child("소분류").child(cate).setValue(lstSubCate);
                 param.put("result", true);
+                param.put("cnt_success", successList.size());
+                param.put("lst_success", successList);
+                param.put("cnt_fail",failList.size());
+                param.put("lst_fail",failList);
                 andthen.vvoidEvent(param);
             }
 
