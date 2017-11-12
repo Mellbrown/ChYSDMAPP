@@ -178,7 +178,7 @@ public class MemeberListMgr {
                     for(String t : subCate) if(!orgSubCate.contains(t)) {check = false; break;}
                     if(check){
                         param.put("result", true);
-                        FirebaseDatabase.getInstance().getReference().child("회원명단").child("분류").child("소분류").child("at").setValue(subCate);
+                        FirebaseDatabase.getInstance().getReference().child("회원명단").child("분류").child("소분류").child(at).setValue(subCate);
                     } else {
                         param.put("result", false);
                         param.put("message", "목록 갱신이 필요합니다.");
