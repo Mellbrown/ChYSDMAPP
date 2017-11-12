@@ -34,7 +34,7 @@ import ml.dilot.chysdmapp.Util;
 
 public class EditerSubCategory extends AppCompatActivity implements View.OnClickListener {
 
-    final String CATE = getIntent().getAction();
+    String CATE;
 
     //리사이클러뷰와 그의 어뎁터
     RecyclerView editSubCateRec;
@@ -58,6 +58,7 @@ public class EditerSubCategory extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editer_sub_category);
 
+        CATE = getIntent().getAction();
         getSupportActionBar().setTitle(getSupportActionBar().getTitle() + CATE);
 
         //각종 UI 로드
