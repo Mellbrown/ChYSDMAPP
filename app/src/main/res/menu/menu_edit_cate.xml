@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:title="추가"
+        android:id="@+id/act_edit_cate_add"/>
+    <item
+        android:title="삭제"
+        android:id="@+id/act_edit_cate_remove"/>
+    <item
+        android:title="이름 변경"
+        android:id="@+id/act_edit_cate_rename"/>
+    <item
+        android:title="순서 변경"
+        android:id="@+id/act_edit_cate_reorde"/>
+</menu>

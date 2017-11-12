@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ml.dilot.chysdmapp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Base">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Test.AddUser"
+            android:label="분류 추가 제거 테스트" />
+        <activity
+            android:name=".Test.TestCategoryMgr"
+            android:label="카테고리 편집 테스트" />
+        <activity android:name=".Editeres.EditerCategory"
+            android:label="회원 대분류 편집" />
+        <activity android:name=".Editeres.EditerSubCategory"
+            android:label="회원 소분류 편집 : "></activity>
+    </application>
+
+</manifest>
