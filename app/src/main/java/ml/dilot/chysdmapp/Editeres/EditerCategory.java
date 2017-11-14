@@ -34,7 +34,6 @@ import java.util.Map;
 import ml.dilot.chysdmapp.DataMgrSet.MemeberListMgr;
 import ml.dilot.chysdmapp.DataMgrSet.vvoidEvent;
 import ml.dilot.chysdmapp.R;
-import ml.dilot.chysdmapp.Test.TestCategoryMgr;
 import ml.dilot.chysdmapp.Util;
 
 public class EditerCategory extends AppCompatActivity implements View.OnClickListener {

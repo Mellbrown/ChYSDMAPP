@@ -7,7 +7,6 @@ import android.view.View;
 
 import ml.dilot.chysdmapp.Editeres.EditerCategory;
 import ml.dilot.chysdmapp.Editeres.EditerSubject;
-import ml.dilot.chysdmapp.Test.TestCategoryMgr;
 
 public class Base extends AppCompatActivity {
 
