@@ -22,10 +22,13 @@
         <activity
             android:name=".Test.TestCategoryMgr"
             android:label="카테고리 편집 테스트" />
-        <activity android:name=".Editeres.EditerCategory"
+        <activity
+            android:name=".Editeres.EditerCategory"
             android:label="회원 대분류 편집" />
-        <activity android:name=".Editeres.EditerSubCategory"
-            android:label="회원 소분류 편집 : "></activity>
+        <activity
+            android:name=".Editeres.EditerSubCategory"
+            android:label="회원 소분류 편집 : " />
+        <activity android:name=".Editeres.EditerSubject"></activity>
     </application>
 
 </manifest>
