@@ -83,6 +83,7 @@ public class EditerSubject extends AppCompatActivity implements View.OnClickList
                         boolean result = (boolean)parmam.get("result");
                         if(result){
                             List<String> subj = (List<String>) parmam.get("snapMajor");
+                            Collections.sort(subj);
                             editSubjAdpater.snapLstSubj = subj;
                             editSubjAdpater.notifyDataSetChanged();
                         }else{
@@ -182,8 +183,7 @@ public class EditerSubject extends AppCompatActivity implements View.OnClickList
     //액션 메뉴 전개
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_edit_cate, menu);
-        menu.removeItem(3);
+        getMenuInflater().inflate(R.menu.menu_edit_subject, menu);
         return true;
     }
 
@@ -199,7 +199,7 @@ public class EditerSubject extends AppCompatActivity implements View.OnClickList
                     fabConfirm.setVisibility(View.GONE);
                     editSubjAdpater.notifyDataSetChanged();
                 }
-                Util.TextEditDialog(this, "새 카테고리", "새카테고리의 이름을 입력해주십시오.", new vvoidEvent() {
+                Util.TextEditDialog(this, "새 학과", "새 학과의 이름을 입력해주십시오.", new vvoidEvent() {
                     @Override
                     public void vvoidEvent(Map parmam) {
                         boolean request = (boolean)parmam.get("result");
@@ -326,7 +326,7 @@ public class EditerSubject extends AppCompatActivity implements View.OnClickList
                                     final ProgressDialog progressDialog = new ProgressDialog(EditerSubject.this);
                                     progressDialog.setCancelable(false);
                                     final String newTitle = (String)parmam.get("text");
-                                    MemeberListMgr.RenameCategory(snapLstSubj.get(position), newTitle , new vvoidEvent() {
+                                    MemeberListMgr.RenameMajor(snapLstSubj.get(position), newTitle , new vvoidEvent() {
                                         @Override
                                         public void vvoidEvent(Map parmam) {
                                             progressDialog.dismiss();

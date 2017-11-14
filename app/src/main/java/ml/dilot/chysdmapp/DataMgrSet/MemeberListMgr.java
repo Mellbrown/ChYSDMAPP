@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -685,6 +686,7 @@ public class MemeberListMgr {
                 Map<String, Object> param = new HashMap<>();
                 List<String> snapMajor = (List<String>) dataSnapshot.getValue();
                 if(snapMajor == null) snapMajor = new ArrayList<>();
+                Collections.sort(snapMajor);
                 param.put("result", true);
                 param.put("snapMajor", snapMajor);
                 andthen.vvoidEvent(param);
@@ -710,6 +712,7 @@ public class MemeberListMgr {
                    return;
                 }
                 snapMajor.add(major);
+                Collections.sort(snapMajor);
                 FirebaseDatabase.getInstance().getReference().child("회원명단").child("분류").child("학과").setValue(snapMajor);
                 param.put("result",true);
                 andthen.vvoidEvent(param);
@@ -721,7 +724,7 @@ public class MemeberListMgr {
             }
         });
     }
-    /////////////////////////
+
     public static void RemoveMajor(final String majores[], final vvoidEvent andthen){
         FirebaseDatabase.getInstance().getReference().child("회원명단").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -751,6 +754,7 @@ public class MemeberListMgr {
                     snapMajor.remove(major);
                     successList.add(major);
                 }
+                Collections.sort(snapMajor);
                 FirebaseDatabase.getInstance().getReference().child("회원명단").child("분류").child("학과").setValue(snapMajor);
                 param.put("result", true);
                 param.put("cnt_success", successList.size());
@@ -787,14 +791,17 @@ public class MemeberListMgr {
                 }
                 Map<String, UserInfo> snapUserInfo = (Map<String, UserInfo>) dataSnapshot.child("명단").getValue();
                 if(snapUserInfo == null) snapUserInfo = new HashMap<>();
+                int changed = 0;
                 for(String key : snapUserInfo.keySet())
                     if(snapUserInfo.get(key).major.equals(oldMajor)){
                         snapUserInfo.get(key).major = newMajor;
+                        changed++;
                         FirebaseDatabase.getInstance().getReference().child("회원명단").child("명단").child(key).setValue(snapUserInfo.get(key).major );
                     }
                 snapMajor.set(snapMajor.indexOf(oldMajor),newMajor);
                 FirebaseDatabase.getInstance().getReference().child("회원명단").child("명단").child("학과").setValue(snapMajor);
                 param.put("result", true);
+                param.put("changed", changed);
                 andthen.vvoidEvent(param);
             }
 
