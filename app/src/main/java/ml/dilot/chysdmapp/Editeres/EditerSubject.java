@@ -215,7 +215,8 @@ public class EditerSubject extends AppCompatActivity implements View.OnClickList
                                     boolean success = (Boolean) parmam.get("result");
                                     if(success) {
                                         editSubjAdpater.snapLstSubj.add(text);
-                                        editSubjAdpater.notifyItemInserted(editSubjAdpater.snapLstSubj.size()-1);
+                                        Collections.sort(editSubjAdpater.snapLstSubj);
+                                        editSubjAdpater.notifyDataSetChanged();
                                         Toast.makeText(EditerSubject.this, "'" + text + "' 항목이 추가되었습니다.", Toast.LENGTH_LONG).show();
                                     } else {
                                         String message = (String) parmam.get("message");

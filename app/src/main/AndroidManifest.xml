@@ -16,16 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Test.AddUser"
-            android:label="분류 추가 제거 테스트" />
-        <activity
-            android:name=".Test.TestCategoryMgr"
-            android:label="카테고리 편집 테스트" />
-        <activity android:name=".Editeres.EditerCategory"
-            android:label="회원 대분류 편집" />
-        <activity android:name=".Editeres.EditerSubCategory"
-            android:label="회원 소분류 편집 : "></activity>
+        <activity android:name=".Editeres.EditerCategory" android:label="회원 대분류 편집" />
+        <activity android:name=".Editeres.EditerSubCategory" android:label="회원 소분류 편집 : "></activity>
+        <activity android:name=".Editeres.EditerSubject" android:label="학과 목록 편집 : "></activity>
     </application>
 
 </manifest>
