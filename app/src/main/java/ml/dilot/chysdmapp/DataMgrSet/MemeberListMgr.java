@@ -721,36 +721,42 @@ public class MemeberListMgr {
             }
         });
     }
-    public static void RemoveMajor(final String major, final vvoidEvent andthen){
+    /////////////////////////
+    public static void RemoveMajor(final String majores[], final vvoidEvent andthen){
         FirebaseDatabase.getInstance().getReference().child("회원명단").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String,Object> param = new HashMap<>();
                 List<String> snapMajor = (List<String>) dataSnapshot.child("분류").child("학과").getValue();
-                if(snapMajor == null) snapMajor = new ArrayList<>();
-                if(!snapMajor.contains(major)){
-                    param.put("result",false);
-                    param.put("message", "해당 과목이 존재하지 않습니다.");
-                    andthen.vvoidEvent(param);
-                    return;
-                }
                 Map<String, UserInfo> snapMemberInfo = (Map<String, UserInfo>) dataSnapshot.child("명단").getValue();
                 if(snapMemberInfo == null) snapMemberInfo = new HashMap<>();
-                boolean find = false;
-                for(String key : snapMemberInfo.keySet())
-                    if(snapMemberInfo.get(key).major == major){
-                        find = true;
-                        break;
+                if(snapMajor == null) snapMajor = new ArrayList<>();
+                List<String> successList = new ArrayList<>();
+                Map<String,String> failList = new HashMap<>();
+                for(String major : majores){
+                    if(!snapMajor.contains(major)){
+                        failList.put(major,"해당 과목이 존재하지 않습니다.");
+                        continue;
                     }
-                if(find){
-                    param.put("result",false);
-                    param.put("message", "해당 과목을 가진 사용자가 존재합니다.");
-                    andthen.vvoidEvent(param);
-                    return;
+                    boolean find = false;
+                    for(String key : snapMemberInfo.keySet())
+                        if(snapMemberInfo.get(key).major == major){
+                            find = true;
+                            break;
+                        }
+                    if(find){
+                        failList.put(major,"해당 과목을 가진 사용자가 존재합니다.");;
+                        continue;
+                    }
+                    snapMajor.remove(major);
+                    successList.add(major);
                 }
-                snapMajor.remove(major);
-                FirebaseDatabase.getInstance().getReference().child("회원명단").child("분류").child("학과").setValue(major);
+                FirebaseDatabase.getInstance().getReference().child("회원명단").child("분류").child("학과").setValue(snapMajor);
                 param.put("result", true);
+                param.put("cnt_success", successList.size());
+                param.put("lst_success", successList);
+                param.put("cnt_fail",failList.size());
+                param.put("lst_fail",failList);
                 andthen.vvoidEvent(param);
             }
 
