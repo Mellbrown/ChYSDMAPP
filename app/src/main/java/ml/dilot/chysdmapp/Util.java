@@ -58,6 +58,23 @@ public class Util {
         ad.show();
     }
 
+    public static void confirmDialog(Context context, String title, String message, final vvoidEvent andthen){
+        AlertDialog.Builder ad = new AlertDialog.Builder(context);
+        ad.setCancelable(false);
+        ad.setTitle(title);
+        ad.setMessage(message);
+
+        ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Map<String, Object> param = new HashMap<>();
+                param.put("result", true);
+                andthen.vvoidEvent(param);
+            }
+        });
+        ad.show();
+    }
+
     public static void StartAddMemeber(final Context context){
         final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);

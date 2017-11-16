@@ -16,10 +16,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Editeres.EditerCategory" android:label="회원 대분류 편집" />
-        <activity android:name=".Editeres.EditerSubCategory" android:label="회원 소분류 편집 : " />
-        <activity android:name=".Editeres.EditerSubject" android:label="학과 목록 편집" />
-        <activity android:name=".Editeres.AddMember" android:label="회원 추가"/>
+        <activity
+            android:name=".Editeres.EditerCategory"
+            android:label="회원 대분류 편집" />
+        <activity
+            android:name=".Editeres.EditerSubCategory"
+            android:label="회원 소분류 편집 : " />
+        <activity
+            android:name=".Editeres.EditerSubject"
+            android:label="학과 목록 편집" />
+        <activity
+            android:name=".Editeres.AddMember"
+            android:label="회원 추가" />
+        <activity android:name=".Pages.ShowMember"></activity>
     </application>
 
 </manifest>
