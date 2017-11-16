@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import ml.dilot.chysdmapp.Editeres.AddMember;
 import ml.dilot.chysdmapp.Editeres.EditerCategory;
 import ml.dilot.chysdmapp.Editeres.EditerSubject;
 
@@ -23,6 +24,9 @@ public class Base extends AppCompatActivity {
                 break;
             case R.id.btn_edit_subject:
                 startActivity(new Intent(this, EditerSubject.class));
+                break;
+            case R.id.btn_add_member:
+                Util.StartAddMemeber(this);
                 break;
         }
     }

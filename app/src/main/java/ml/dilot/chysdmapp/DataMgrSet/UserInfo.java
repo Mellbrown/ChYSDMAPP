@@ -5,17 +5,17 @@ package ml.dilot.chysdmapp.DataMgrSet;
  */
 
 public class UserInfo {
-    String category;
-    String subCategory;
-    String major;
+    public String category;
+    public String subCategory;
+    public String major;
 
-    String name;
-    String homeNumber;
-    String phoneNumber;
+    public String name;
+    public String homeNumber;
+    public String phoneNumber;
 
-    String group;
-    String position;
+    public String group;
+    public String position;
 
-    String zip;
-    String memo;
+    public String zip;
+    public String memo;
 }
