@@ -8,6 +8,7 @@ import android.view.View;
 import ml.dilot.chysdmapp.Editeres.AddMember;
 import ml.dilot.chysdmapp.Editeres.EditerCategory;
 import ml.dilot.chysdmapp.Editeres.EditerSubject;
+import ml.dilot.chysdmapp.Pages.ShowMember;
 
 public class Base extends AppCompatActivity {
 
@@ -27,6 +28,9 @@ public class Base extends AppCompatActivity {
                 break;
             case R.id.btn_add_member:
                 Util.StartAddMemeber(this);
+                break;
+            case R.id.show_member:
+                startActivity(new Intent(this, ShowMember.class));
                 break;
         }
     }
