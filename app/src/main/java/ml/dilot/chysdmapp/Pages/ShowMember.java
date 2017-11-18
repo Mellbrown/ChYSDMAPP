@@ -251,7 +251,6 @@ public class ShowMember extends AppCompatActivity {
                     i = 1;
                     break;
             }
-
             return i;
         }
 

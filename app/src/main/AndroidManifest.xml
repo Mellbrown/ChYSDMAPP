@@ -28,7 +28,18 @@
         <activity
             android:name=".Editeres.AddMember"
             android:label="회원 추가" />
-        <activity android:name=".Pages.ShowMember"></activity>
+        <activity android:name=".Pages.ShowMember"
+            android:label="회원 명단"/>
+        <activity android:name=".Editeres.EditerMember"
+            android:label="회원 명단 편집"/>
+        <activity android:name=".Pages.ShowBoader"
+            android:label="임원 명단"/>
+        <activity android:name=".Editeres.EditerManager"
+            android:label="임원 명단 편집"/>
+        <activity android:name=".Pages.ShowProfile"
+            android:label="프로필:"/>
+        <activity android:name=".Editeres.EditerProfile"
+            android:label="프로필 수정 : "/>
     </application>
 
 </manifest>

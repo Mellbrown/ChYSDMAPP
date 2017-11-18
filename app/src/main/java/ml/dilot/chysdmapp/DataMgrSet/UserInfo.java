@@ -1,12 +1,13 @@
 package ml.dilot.chysdmapp.DataMgrSet;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by mlyg2 on 2017-11-05.
  */
 
-public class UserInfo {
+public class UserInfo implements Serializable{
     public String category;
     public String subCategory;
     public String major;
