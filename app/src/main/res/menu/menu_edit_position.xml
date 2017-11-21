@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_position"
+        android:title="직위 추가" />
+    <item
+        android:id="@+id/edit_position"
+        android:title="직위 수정" />
+    <item
+        android:id="@+id/reorder_position"
+        android:title="직위 재정렬" />
+    <item
+        android:id="@+id/delete_position"
+        android:title="직위 삭제" />
+</menu>

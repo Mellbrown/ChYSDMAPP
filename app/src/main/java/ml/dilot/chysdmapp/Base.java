@@ -1,41 +1,40 @@
 package ml.dilot.chysdmapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import ml.dilot.chysdmapp.Editeres.AddMember;
 import ml.dilot.chysdmapp.Editeres.EditerCategory;
+import ml.dilot.chysdmapp.Editeres.EditerDeactiveMember;
 import ml.dilot.chysdmapp.Editeres.EditerMember;
+import ml.dilot.chysdmapp.Editeres.EditerPosition;
 import ml.dilot.chysdmapp.Editeres.EditerSubject;
+import ml.dilot.chysdmapp.Pages.MainMenu;
 import ml.dilot.chysdmapp.Pages.ShowMember;
+import ml.dilot.chysdmapp.Pages.SignIn;
+import ml.dilot.chysdmapp.Pages.Signup;
+import ml.dilot.chysdmapp.UtilPack.Util;
 
 public class Base extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base);
-    }
+        SharedPreferences sharedPreferences = getSharedPreferences("account",MODE_PRIVATE);
+        String id = sharedPreferences.getString("id",null);
+        String pw = sharedPreferences.getString("pw",null);
 
-    public void OnClick(View view){
-        switch (view.getId()){
-            case R.id.btn_edit_cateogry:
-                startActivity(new Intent(this, EditerCategory.class));
-                break;
-            case R.id.btn_edit_subject:
-                startActivity(new Intent(this, EditerSubject.class));
-                break;
-            case R.id.btn_add_member:
-                Util.StartAddMemeber(this);
-                break;
-            case R.id.show_member:
-                startActivity(new Intent(this, ShowMember.class));
-                break;
-            case R.id.edit_member:
-                startActivity(new Intent(this, EditerMember.class));
-                break;
+        if(id == null || pw == null){
+            startActivity(new Intent(this, SignIn.class));
+        } else {
+            Intent intent = new Intent(this, MainMenu.class);
+            intent.putExtra("id",id);
+            intent.putExtra("pw",pw);
+            startActivity(intent);
         }
+        finish();
     }
 }

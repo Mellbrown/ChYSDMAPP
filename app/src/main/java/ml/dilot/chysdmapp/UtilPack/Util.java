@@ -1,4 +1,4 @@
-package ml.dilot.chysdmapp;
+package ml.dilot.chysdmapp.UtilPack;
 
 
 import android.app.Dialog;
@@ -6,12 +6,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -19,18 +24,18 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import ml.dilot.chysdmapp.DataMgrSet.MemeberListMgr;
 import ml.dilot.chysdmapp.DataMgrSet.vvoidEvent;
 import ml.dilot.chysdmapp.Editeres.AddMember;
+import ml.dilot.chysdmapp.R;
 
 /**
  * Created by mlyg2 on 2017-11-07.
  */
 
 public class Util {
+    public static FirebaseUser firebaseUser;
     public static void TextEditDialog(Context context, String title, String message, final vvoidEvent andthen){
         AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setTitle(title);
@@ -58,6 +63,26 @@ public class Util {
         ad.show();
     }
 
+    public static void ConfirmCancleDialog(Context context, String title, String message, final ConfirmCancleDialog.ConfirmCancleListener callback) {
+        AlertDialog.Builder ad = new AlertDialog.Builder(context);
+        ad.setTitle(title);
+        ad.setMessage(message);
+        ad.setCancelable(false);
+        ad.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                callback.onConfrim();
+            }
+        });
+        ad.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                callback.onCancle();
+            }
+        });
+        ad.show();
+    }
+
     public static void confirmDialog(Context context, String title, String message, final vvoidEvent andthen){
         AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setCancelable(false);
@@ -75,7 +100,7 @@ public class Util {
         ad.show();
     }
 
-    public static void StartAddMemeber(final Context context){
+    public static void StartAddMemeber(final Context context, final String strCate, final String strSubcate){
         final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -91,6 +116,15 @@ public class Util {
                 intent.putExtra("cate",cate);
                 intent.putExtra("subject",subject);
                 intent.putExtra("subcate",subcate);
+
+                if(strCate != null && strSubcate == null){
+                    intent.setAction("selectcate");
+                    intent.putExtra("selectedcate",strCate);
+                } else if(strCate != null && strSubcate != null){
+                    intent.setAction("selectsubcate");
+                    intent.putExtra("selectedcate",strCate);
+                    intent.putExtra("selectedsubcate",strCate);
+                }
                 context.startActivity(intent);
             }
 

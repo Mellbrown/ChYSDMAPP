@@ -204,7 +204,7 @@ public class MemeberListMgr {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> param = new HashMap<>();
-                List<String> lstCate = (List<String>) dataSnapshot.child("대분류").getValue();
+                List<String> lstCate = (List<String>) dataSnapshot.child("분류").child("대분류").getValue();
                 if(lstCate == null) lstCate = new ArrayList<>();
                 if(!lstCate.contains(cateAt)){
                     param.put("result", false);
@@ -212,7 +212,7 @@ public class MemeberListMgr {
                     andthen.vvoidEvent(param);
                     return;
                 } else {
-                    List<String> lstSubcate = (List<String>) dataSnapshot.child("소분류").child(cateAt).getValue();
+                    List<String> lstSubcate = (List<String>) dataSnapshot.child("분류").child("소분류").child(cateAt).getValue();
                     if(lstSubcate == null) lstSubcate = new ArrayList<>();
                     if(!lstSubcate.contains(subCateAt)){
                         param.put("result",false);
@@ -222,10 +222,10 @@ public class MemeberListMgr {
                     }
                 }
 
-                Map<String,UserInfo> memberDates = (Map<String, UserInfo>) dataSnapshot.child("명단").getValue();
+                Map<String,UserInfo> memberDates = UserInfo.HashMapUserInfoCaster((HashMap<String,HashMap<String,String>>) dataSnapshot.child("명단").getValue());
                 if(memberDates == null) memberDates = new HashMap<>();
                 List<String> notExistUides = new ArrayList<>();
-                DatabaseReference userinfoesref = FirebaseDatabase.getInstance().getReference().child("회원데이터");
+                DatabaseReference userinfoesref = FirebaseDatabase.getInstance().getReference().child("회원명단/명단");
                 for(String uid : uids){
                     UserInfo userInfo = memberDates.get(uid);
                     if(userInfo != null){
@@ -257,15 +257,15 @@ public class MemeberListMgr {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final Map<String, Object> param = new HashMap<>();
-                Map<String,UserInfo> memberDates = (Map<String, UserInfo>) dataSnapshot.getValue();
+                Map<String,UserInfo> memberDates = UserInfo.HashMapUserInfoCaster((HashMap<String, HashMap<String,String>>) dataSnapshot.getValue());
                 if(memberDates == null) memberDates = new HashMap<>();
                 List<String> notExistUides = new ArrayList<>();
-                DatabaseReference userinfoesref = FirebaseDatabase.getInstance().getReference().child("회원데이터");
+                DatabaseReference userinfoesref = FirebaseDatabase.getInstance().getReference().child("회원명단/명단");
                 for(String uid : uids){
                     UserInfo userInfo = memberDates.get(uid);
                     if(userInfo != null){
-                        userInfo.category = null;
-                        userInfo.subCategory = null;
+                        userInfo.category = "";
+                        userInfo.subCategory = "";
                         userinfoesref.child(uid).setValue(userInfo);
                     } else notExistUides.add(uid);
                 }
@@ -577,7 +577,7 @@ public class MemeberListMgr {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> param = new HashMap<>();
-                Map<String,UserInfo> snapUseres = (Map<String, UserInfo>) dataSnapshot.getValue();
+                Map<String,UserInfo> snapUseres = UserInfo.HashMapUserInfoCaster((HashMap<String, HashMap<String,String>>) dataSnapshot.getValue());
                 if(snapUseres == null) snapUseres = new HashMap<>();
                 UserInfo user = snapUseres.get(uid);
                 if(user == null){
@@ -586,7 +586,7 @@ public class MemeberListMgr {
                     andthen.vvoidEvent(param);
                     return;
                 }
-                if(user.category != null || user.subCategory != null){
+                if(!"".equals(user.category) || !"".equals(user.subCategory)){
                     param.put("result", false);
                     param.put("message", "비활성화가 먼저 선행되어야합니다.");
                     andthen.vvoidEvent(param);

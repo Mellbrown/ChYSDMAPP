@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="회원 추가" android:id="@+id/act_add_member" />
+    <item
+        android:id="@+id/act_add_member"
+        android:checkable="false"
+        android:title="여기서 회원 추가" />
     <item android:title="회원 이동" android:id="@+id/act_move_member" />
     <item android:title="회원 수정" android:id="@+id/act_edit_member" />
     <item android:title="회원 비활성화" android:id="@+id/act_deact_member" />

@@ -2,7 +2,6 @@ package ml.dilot.chysdmapp.Editeres;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,16 +26,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import ml.dilot.chysdmapp.DataMgrSet.MemeberListMgr;
 import ml.dilot.chysdmapp.DataMgrSet.UserInfo;
 import ml.dilot.chysdmapp.DataMgrSet.vvoidEvent;
 import ml.dilot.chysdmapp.Pages.ShowProfile;
 import ml.dilot.chysdmapp.R;
-import ml.dilot.chysdmapp.Util;
+import ml.dilot.chysdmapp.UtilPack.ConfirmCancleDialog;
+import ml.dilot.chysdmapp.UtilPack.SelectCateDialog;
+import ml.dilot.chysdmapp.UtilPack.Util;
 
-public class EditerMember extends AppCompatActivity {
+public class EditerMember extends AppCompatActivity implements View.OnClickListener {
 
     SearchView searchView;
     RecyclerView recyclerView;
@@ -50,13 +54,93 @@ public class EditerMember extends AppCompatActivity {
 
     ArrayList<String> cate;
     HashMap<String,ArrayList<String>> subCate;
-    HashMap<String,HashMap<String,String>> member;
+    HashMap<String,UserInfo> member;
 
     String selectedTitle;
+    String selectedSubTitle;
     ArrayList<UserInfo> filteredMember = new ArrayList<>();
     ArrayList<Integer> lstSelected = new ArrayList<>();
 
     EditerMemberMode editerMemberMode = EditerMemberMode.Cate;
+
+    @Override
+    public void onClick(View view) {
+        switch (editMode){
+            case Move:
+            switch (view.getId()){
+                case R.id.fabConfirm:
+                    SelectCateDialog selectCateDialog = new SelectCateDialog(this, lstSelected.size(),cate, subCate, new vvoidEvent() {
+                        @Override
+                        public void vvoidEvent(Map parmam) {
+                            boolean result = (boolean)parmam.get("result");
+                            if(result){
+                                final String toCate = (String)parmam.get("selectedcate");
+                                String toSubCate = (String)parmam.get("selectedsubcate");
+                                Log.d("toCate",toCate);
+                                Log.d("toSubCate",toSubCate);
+                                ArrayList<String> tarUids = new ArrayList<>();
+                                for(int pos : lstSelected) tarUids.add(filteredMember.get(pos).getUid());
+                                final ProgressDialog progressDialog = new ProgressDialog(EditerMember.this);
+                                progressDialog.setTitle("회원 이동중...");
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
+                                MemeberListMgr.MoveToMember(tarUids, toCate, toSubCate, new vvoidEvent() {
+                                    @Override
+                                    public void vvoidEvent(Map parmam) {
+                                        progressDialog.dismiss();
+                                        boolean result = (boolean)parmam.get("result");
+                                        if(result){
+                                            final int total = (int)parmam.get("total");
+                                            final int success = (int)parmam.get("success");
+                                            final int fail = (int)parmam.get("fail");
+                                            LoadData(new vvoidEvent() {
+                                                @Override
+                                                public void vvoidEvent(Map parmam) {
+                                                    fabCancle.setVisibility(View.GONE);
+                                                    fabConfirm.setVisibility(View.GONE);
+                                                    tip.setVisibility(View.GONE);
+                                                    lstSelected.clear();
+                                                    filteredMember.clear();
+                                                    for(String key : member.keySet()){
+                                                        UserInfo mem = member.get(key);
+                                                        if(selectedTitle.equals(mem.category) && selectedSubTitle.equals(mem.subCategory))
+                                                            filteredMember.add(mem);
+                                                    }
+                                                    Collections.sort(filteredMember);
+                                                    editMode = EditMode.View;
+                                                    editMemberAdpater.notifyDataSetChanged();
+                                                    Toast.makeText(EditerMember.this,"총 " +total +"명의 회원 이동, 성공:"+success+", 실패:"+fail,Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }else {
+                                            String message = (String)parmam.get("message");
+                                            Toast.makeText(EditerMember.this,message,Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    selectCateDialog.show();
+                    break;
+                case R.id.fabCancle:
+                    fabCancle.setVisibility(View.GONE);
+                    fabConfirm.setVisibility(View.GONE);
+                    tip.setVisibility(View.GONE);
+                    lstSelected.clear();
+                    editMode = EditMode.View;
+                    editMemberAdpater.notifyDataSetChanged();
+                    break;
+            }
+            break;
+        default:
+            fabCancle.setVisibility(View.GONE);
+            fabConfirm.setVisibility(View.GONE);
+            tip.setVisibility(View.GONE);
+            break;
+        }
+    }
+
     enum  EditerMemberMode{
         Cate,
         SubCate,
@@ -88,6 +172,8 @@ public class EditerMember extends AppCompatActivity {
         tip.setVisibility(View.GONE);
         fabCancle.setVisibility(View.GONE);
         fabConfirm.setVisibility(View.GONE);
+        fabCancle.setOnClickListener(this);
+        fabConfirm.setOnClickListener(this);
 
         LoadData(new vvoidEvent() {
             @Override
@@ -103,8 +189,9 @@ public class EditerMember extends AppCompatActivity {
                         public boolean onQueryTextSubmit(String s) {
                             actionBar.setTitle("'"+s+"'검색결과");
                             filteredMember.clear();
+                            menuItemEnable(true);
                             for(String key : member.keySet()){
-                                UserInfo mem = new UserInfo(member.get(key));
+                                UserInfo mem = member.get(key);
                                 if(
                                         mem.name.matches(".*"+s+".*")||
                                                 mem.category.matches(".*"+s+".*")||
@@ -117,6 +204,7 @@ public class EditerMember extends AppCompatActivity {
                                         )
                                     filteredMember.add(mem);
                             }
+                            Collections.sort(filteredMember);
                             editerMemberMode = EditerMemberMode.Search;
                             editMemberAdpater.notifyDataSetChanged();
                             return true;
@@ -133,10 +221,18 @@ public class EditerMember extends AppCompatActivity {
     }
 
     //액션 메뉴 전개
+    ArrayList<MenuItem> menuItems = new ArrayList<>();
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_edit_member, menu);
+        for(int i = 1; menu.size() > i;  i++)
+            menuItems.add(menu.getItem(i));
+        menuItemEnable(false);
         return true;
+    }
+    public void menuItemEnable(boolean enable){
+        for(MenuItem menuItem : menuItems)
+            menuItem.setEnabled(enable);
     }
 
     //액션 메뉴 클릭
@@ -149,7 +245,18 @@ public class EditerMember extends AppCompatActivity {
                 fabConfirm.setVisibility(View.GONE);
                 fabCancle.setVisibility(View.GONE);
                 tip.setVisibility(View.GONE);
-                Util.StartAddMemeber(this);
+                switch (editerMemberMode){
+                    case Cate:
+                    case Search:
+                        Util.StartAddMemeber(this,null,null);
+                        break;
+                    case SubCate:
+                        Util.StartAddMemeber(this,selectedTitle,null);
+                        break;
+                    case Member:
+                        Util.StartAddMemeber(this,selectedTitle,selectedSubTitle);
+                        break;
+                }
                 break;
             case R.id.act_move_member:
                 editMode = EditMode.Move;
@@ -160,7 +267,7 @@ public class EditerMember extends AppCompatActivity {
                 tip.setVisibility(View.VISIBLE);
                 tipText.setText("이동 : 0개 선택됨");
                 break;
-            case R.id.edit_member:
+            case R.id.act_edit_member:
                 editMode = EditMode.ProfileEdit;
                 editMemberAdpater.notifyDataSetChanged();
                 fabConfirm.setVisibility(View.GONE);
@@ -208,12 +315,14 @@ public class EditerMember extends AppCompatActivity {
                         editMemberAdpater.notifyDataSetChanged();
                         break;
                     case Member:
+                        menuItemEnable(false);
                         actionBar.setTitle(selectedTitle+">");
                         editerMemberMode = EditerMemberMode.SubCate;
                         filteredMember.clear();
                         editMemberAdpater.notifyDataSetChanged();
                         break;
                     case Search:
+                        menuItemEnable(false);
                         actionBar.setTitle("회원명단 수정");
                         editerMemberMode = EditerMemberMode.Cate;
                         filteredMember.clear();
@@ -250,11 +359,17 @@ public class EditerMember extends AppCompatActivity {
             switch (editerMemberMode){
                 case Cate:
                     TitleViewHolder cateView = (TitleViewHolder)holder;
-                    cateView.txtCate.setText(cate.get(position));
+                    String strCate = cate.get(position);
+                    Integer cntCate = titleCounter.get(strCate);
+                    cntCate = cntCate == null ? 0 : cntCate;
+                    cateView.txtCate.setText( strCate + "(" + cntCate +")");
                     break;
                 case SubCate:
                     TitleViewHolder subCateView = (TitleViewHolder)holder;
-                    subCateView.txtCate.setText(subCate.get(selectedTitle).get(position).toString());
+                    String strSubCate = subCate.get(selectedTitle).get(position);
+                    Integer cntSubCate = titleCounter.get(selectedTitle+"-"+strSubCate);
+                    cntSubCate = cntSubCate == null ? 0 : cntSubCate;
+                    subCateView.txtCate.setText(strSubCate + "(" + cntSubCate +")");
                     break;
                 case Member:
                 case Search:
@@ -325,7 +440,7 @@ public class EditerMember extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                int position = getLayoutPosition();
+                final int position = getLayoutPosition();
                 switch (editMode){
                     case View:
                         Intent intent = new Intent(EditerMember.this, ShowProfile.class);
@@ -339,10 +454,61 @@ public class EditerMember extends AppCompatActivity {
                         tipText.setText("이동 : " + lstSelected.size() + "개 선택됨");
                         break;
                     case AddBoarder:
+                        ////////////////////////////////////////////////////////////////////////////////
                         break;
                     case AddManager:
+                        ///////////////////////////////////////////////////////////////////////////////
                         break;
                     case Deactivate:
+                        UserInfo user = filteredMember.get(position);
+                        Util.ConfirmCancleDialog(EditerMember.this, "사용자 비활성화", "'" + user.name + "'님을 정말로 비활성화 하시겠습니까?", new ConfirmCancleDialog.ConfirmCancleListener() {
+                            @Override
+                            public void onConfrim() {
+                                final ProgressDialog progressDialog = new ProgressDialog(EditerMember.this);
+                                progressDialog.setCancelable(false);
+                                progressDialog.setTitle("해당 사용자 비활성화 중...");
+                                progressDialog.show();
+                                ArrayList<String> tarUids = new ArrayList<>();
+                                tarUids.add(filteredMember.get(position).getUid());
+                                MemeberListMgr.DeactivateMember(tarUids, new vvoidEvent() {
+                                    @Override
+                                    public void vvoidEvent(Map parmam) {
+                                        progressDialog.dismiss();
+                                        boolean result = (boolean)parmam.get("result");
+                                        if(result){
+                                            int total = (int)parmam.get("total");
+                                            int success = (int)parmam.get("success");
+                                            if(success == 1){
+                                                LoadData(new vvoidEvent() {
+                                                    @Override
+                                                    public void vvoidEvent(Map parmam) {
+                                                        filteredMember.clear();
+                                                        for(String key : member.keySet()){
+                                                            UserInfo mem = member.get(key);
+                                                            if(mem.category.equals(selectedTitle) && mem.subCategory.equals(selectedSubTitle))
+                                                                filteredMember.add(mem);
+                                                        }
+                                                        Collections.sort(filteredMember);
+                                                        editMemberAdpater.notifyDataSetChanged();
+                                                        Toast.makeText(EditerMember.this,"1명의 사용자 비활성화",Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                            } else {
+                                                Toast.makeText(EditerMember.this,"비활성화 실패",Toast.LENGTH_LONG).show();
+                                            }
+
+                                        } else {
+                                            String message = (String)parmam.get("message");
+                                            Toast.makeText(EditerMember.this,message,Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            }
+                            @Override
+                            public void onCancle() {
+                                Toast.makeText(EditerMember.this,"?",Toast.LENGTH_LONG).show();
+                            }
+                        });
                         break;
                     case ProfileEdit:
                         intent = new Intent(EditerMember.this, EditerProfile.class);
@@ -371,18 +537,21 @@ public class EditerMember extends AppCompatActivity {
                     case Cate:
                         selectedTitle = cate.get(position);
                         editerMemberMode = editerMemberMode.SubCate;
+                        menuItemEnable(false);
                         actionBar.setTitle(selectedTitle + ">");
                         notifyDataSetChanged();
                         break;
                     case SubCate:
-                        String selectedSubTitle = subCate.get(selectedTitle).get(position);
+                        menuItemEnable(true);
+                        selectedSubTitle = subCate.get(selectedTitle).get(position);
                         actionBar.setTitle(selectedTitle + ">" + selectedSubTitle + ">");
                         filteredMember.clear();
                         for(String key : member.keySet()){
-                            UserInfo mem = new UserInfo(member.get(key));
+                            UserInfo mem = member.get(key);
                             if(mem.category.equals(selectedTitle) && mem.subCategory.equals(selectedSubTitle))
                                 filteredMember.add(mem);
                         }
+                        Collections.sort(filteredMember);
                         editerMemberMode = editerMemberMode.Member;
                         notifyDataSetChanged();
                         break;
@@ -403,13 +572,14 @@ public class EditerMember extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference("회원명단/명단").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                member = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
+                member = UserInfo.HashMapUserInfoCaster((HashMap<String, HashMap<String,String>>) dataSnapshot.getValue());
                 HashMap<String,Object> param = new HashMap();
+                refreshTitleCounter();
                 param.put("result",false);
-                Log.d("sdfsdf",member.toString());
                 if(--load[0] <= 0){
                     progressDialog.dismiss();
                     if(!fail[0]) Util.confirmDialog(EditerMember.this, "오류", "목록을 불러올 수 없습니다.", onload);
+
                     else onload.vvoidEvent(param);
                 }
             }
@@ -452,5 +622,20 @@ public class EditerMember extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    HashMap<String,Integer> titleCounter = new HashMap<>();
+    public void refreshTitleCounter(){
+        titleCounter.clear();
+        for(UserInfo userInfo : member.values()){
+            String cate = userInfo.category;
+            String cate_subcate = userInfo.category + "-" + userInfo.subCategory;
+            Integer cnt_cate = titleCounter.get(cate);
+            Integer cnt_cate_subcate = titleCounter.get(cate_subcate);
+            cnt_cate = cnt_cate == null ? 1 : cnt_cate + 1;
+            cnt_cate_subcate = cnt_cate_subcate == null ? 1 : cnt_cate_subcate + 1;
+            titleCounter.put(cate,cnt_cate);
+            titleCounter.put(cate_subcate, cnt_cate_subcate);
+        }
     }
 }

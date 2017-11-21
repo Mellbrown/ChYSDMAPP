@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_member"
+        android:title="회원추가" />
+    <item
+        android:id="@+id/edit_boader"
+        android:title="임원편집" />
+    <item
+        android:id="@+id/edit_cate"
+        android:title="분류편집" />
+    <item
+        android:id="@+id/edit_deactive"
+        android:title="비활성화사용자" />
+    <item
+        android:id="@+id/edit_boarder"
+        android:title="관리자 편집" />
+    <item
+        android:id="@+id/edit_member"
+        android:title="회원 편집" />
+    <item
+        android:id="@+id/edit_position"
+        android:title="직위편집" />
+    <item
+        android:id="@+id/edit_subject"
+        android:title="과목편집" ></item>
+    <item
+        android:id="@+id/logout"
+        android:title="로그아웃" />
+</menu>

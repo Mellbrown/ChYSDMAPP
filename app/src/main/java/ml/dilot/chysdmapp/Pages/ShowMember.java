@@ -23,11 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ml.dilot.chysdmapp.DataMgrSet.MemeberListMgr;
 import ml.dilot.chysdmapp.DataMgrSet.UserInfo;
 import ml.dilot.chysdmapp.DataMgrSet.vvoidEvent;
 import ml.dilot.chysdmapp.R;
-import ml.dilot.chysdmapp.Util;
+import ml.dilot.chysdmapp.UtilPack.Util;
 
 public class ShowMember extends AppCompatActivity {
 
@@ -74,6 +73,7 @@ public class ShowMember extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 member = (HashMap<String, HashMap<String,String>>) dataSnapshot.getValue();
+                if(member == null) member = new HashMap<>();
                 Log.d("sdfsdf",member.toString());
                 if(--load[0] <= 0){
                     progressDialog.dismiss();
@@ -105,6 +105,8 @@ public class ShowMember extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 cate = (ArrayList<String>)dataSnapshot.child("대분류").getValue();
                 subCate = (HashMap<String,ArrayList<String>>)dataSnapshot.child("소분류").getValue();
+                if(cate == null) cate = new ArrayList<>();
+                if(subCate == null) subCate = new HashMap<>();
                 if(--load[0] <= 0){
                     progressDialog.dismiss();
                     if(!fail[0])Util.confirmDialog(ShowMember.this, "오류", "목록을 불러올 수 없습니다.", new vvoidEvent() {
@@ -147,7 +149,7 @@ public class ShowMember extends AppCompatActivity {
                 actionBar.setTitle("'"+s+"'검색결과");
                 filteredMember.clear();
                 for(String key : member.keySet()){
-                    UserInfo mem = new UserInfo(member.get(key));
+                    UserInfo mem = new UserInfo(member.get(key),key);
                     if(
                             mem.name.matches(".*"+s+".*")||
                             mem.category.matches(".*"+s+".*")||
@@ -321,7 +323,7 @@ public class ShowMember extends AppCompatActivity {
                         actionBar.setTitle(selectedTitle + ">" + selectedSubTitle + ">");
                         filteredMember.clear();
                         for(String key : member.keySet()){
-                            UserInfo mem = new UserInfo(member.get(key));
+                            UserInfo mem = new UserInfo(member.get(key),key);
                             if(mem.category.equals(selectedTitle) && mem.subCategory.equals(selectedSubTitle))
                                 filteredMember.add(mem);
                         }

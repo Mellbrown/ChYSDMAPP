@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_boader"
+        android:title="임원 추가" />
+    <item
+        android:id="@+id/edit_boader"
+        android:title="임원 수정" />
+    <item
+        android:id="@+id/delete_boarder"
+        android:title="임원 제거" />
+    <item
+        android:id="@+id/add_year"
+        android:title="년도 추가" />
+    <item
+        android:id="@+id/remove_year"
+        android:title="년도제거" />
+    <item
+        android:id="@+id/set_default_year"
+        android:title="기본 표시 년도 설정" />
+</menu>

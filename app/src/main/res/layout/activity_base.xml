@@ -7,37 +7,4 @@
     android:layout_height="match_parent"
     tools:context="ml.dilot.chysdmapp.Base">
 
-    <Button
-        android:id="@+id/btn_edit_subject"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="과목 편집"
-        android:onClick="OnClick" />
-
-    <Button
-        android:id="@+id/btn_edit_cateogry"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="분류 편집"
-        android:onClick="OnClick"/>
-
-    <Button
-        android:id="@+id/btn_add_member"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="회원 추가"
-        android:onClick="OnClick"/>
-
-    <Button
-        android:id="@+id/show_member"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="회원명단"
-        android:onClick="OnClick"/>
-    <Button
-        android:id="@+id/edit_member"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="회원명단수정"
-        android:onClick="OnClick"/>
 </LinearLayout>

@@ -3,10 +3,7 @@ package ml.dilot.chysdmapp.Editeres;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.support.v4.widget.Space;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -27,14 +24,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import ml.dilot.chysdmapp.DataMgrSet.MemeberListMgr;
 import ml.dilot.chysdmapp.DataMgrSet.vvoidEvent;
 import ml.dilot.chysdmapp.R;
-import ml.dilot.chysdmapp.Util;
+import ml.dilot.chysdmapp.UtilPack.Util;
 
 public class EditerCategory extends AppCompatActivity implements View.OnClickListener {
 

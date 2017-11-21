@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ml.dilot.chysdmapp">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +13,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ml.dilot.chysdmapp.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <activity android:name=".Base">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,18 +42,50 @@
         <activity
             android:name=".Editeres.AddMember"
             android:label="회원 추가" />
-        <activity android:name=".Pages.ShowMember"
-            android:label="회원 명단"/>
-        <activity android:name=".Editeres.EditerMember"
-            android:label="회원 명단 편집"/>
-        <activity android:name=".Pages.ShowBoader"
-            android:label="임원 명단"/>
-        <activity android:name=".Editeres.EditerManager"
-            android:label="임원 명단 편집"/>
-        <activity android:name=".Pages.ShowProfile"
-            android:label="프로필:"/>
-        <activity android:name=".Editeres.EditerProfile"
-            android:label="프로필 수정 : "/>
+        <activity
+            android:name=".Pages.ShowMember"
+            android:label="회원 명단" />
+        <activity
+            android:name=".Editeres.EditerMember"
+            android:label="회원 명단 편집" />
+        <activity
+            android:name=".Pages.ShowBoader"
+            android:label="임원 명단" />
+        <activity
+            android:name=".Editeres.EditerManager"
+            android:label="임원 명단 편집" />
+        <activity
+            android:name=".Pages.ShowProfile"
+            android:label="프로필:" />
+        <activity
+            android:name=".Editeres.EditerProfile"
+            android:label="프로필 수정 : " />
+        <activity
+            android:name=".Editeres.EditerDeactiveMember"
+            android:label="비활성화 사용자" />
+        <activity
+            android:name=".Editeres.EditerBoarder"
+            android:label="임원 명단 편집" />
+        <activity
+            android:name=".Editeres.EditerPosition"
+            android:label="직위 편집" />
+        <activity android:name=".Pages.SplashPage" />
+        <activity
+            android:name=".Pages.SignIn"
+            android:label="로그인" />
+        <activity
+            android:name=".Pages.Signup"
+            android:label="가입" />
+        <activity
+            android:name=".Pages.MainMenu"
+            android:label="연세동문수첩" />
+        <activity
+            android:name=".Pages.ManagerMenu"
+            android:label="관리자 메뉴" />
+        <activity
+            android:name=".Pages.ConnectUser"
+            android:label="사용자 데이터 연결" />
+        <activity android:name=".Pages.FindAccount" android:label="계정찾기"></activity>
     </application>
 
 </manifest>
